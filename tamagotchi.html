@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Mascota Virtual</title>
+
+<style>
+
+body{
+    font-family: 'Trebuchet MS', sans-serif;
+    background: linear-gradient(180deg, #ffe6f2, #fff6fb);
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+/* TITULO */
+h1{
+    margin-top: 25px;
+    font-size: 55px;
+    color: #ff5fa2;
+    text-shadow: 3px 3px 0px #ffffff;
+    letter-spacing: 2px;
+}
+
+/* CONTENEDOR PRINCIPAL */
+#contenedor{
+    width: 950px;
+    margin: auto;
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+}
+
+/* AREA DONDE SE SUELTAN OBJETOS */
+#zonaMascota{
+    width: 450px;
+    height: 350px;
+    border: 6px solid #ff9bc9;
+    border-radius: 35px;
+    background-color: #fff0f7;
+
+    background-image: url("img/pixil-frame-0\ \(3\).png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    box-shadow:
+        0 10px 25px rgba(255, 120, 180, 0.35),
+        inset 0 0 15px rgba(255,255,255,0.8);
+
+    transition: 0.3s;
+}
+
+#zonaMascota:hover{
+    transform: scale(1.02);
+}
+
+/* PANEL DERECHA */
+#panel{
+    text-align: left;
+    font-size: 28px;
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 30px;
+    border: 5px solid #ffd2e8;
+
+    box-shadow:
+        0 8px 20px rgba(255, 160, 200, 0.35);
+
+    color: #ff5fa2;
+
+    min-width: 250px;
+}
+
+/* LABELS */
+#panel label{
+    font-weight: bold;
+    line-height: 60px;
+}
+
+/* AREA DE OBJETOS */
+#objetos{
+    margin-top: 45px;
+    background-color: rgba(255,255,255,0.7);
+    padding: 20px;
+    border-radius: 30px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+
+    border: 4px solid #ffd3e7;
+
+    box-shadow:
+        0 8px 18px rgba(255, 170, 210, 0.3);
+}
+
+/* OBJETOS */
+.objeto{
+    width: 95px;
+    margin: 12px;
+    cursor: grab;
+
+    transition: 0.25s;
+
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+}
+
+.objeto:hover{
+    transform: scale(1.15) rotate(-4deg);
+}
+
+.objeto:active{
+    cursor: grabbing;
+    transform: scale(1.08);
+}
+
+/* EFECTO DECORATIVO */
+body::before{
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 28px;
+    color: #ff9bc9;
+    opacity: 0.7;
+}
+#tarjetaAyuda{
+    width: 550px;
+    margin: 30px auto;
+    background-color: #ffffff;
+    border: 5px solid #ffd2e8;
+    border-radius: 25px;
+    padding: 20px;
+    color: #ff5fa2;
+    text-align: left;
+    box-shadow: 0 8px 20px rgba(255,160,200,0.35);
+}
+
+#tarjetaAyuda h3{
+    text-align: center;
+    margin-top: 0;
+    font-size: 28px;
+}
+
+#tarjetaAyuda p{
+    font-size: 22px;
+    margin: 12px 0;
+}
+</style>
+
+<script>
+
+let hambre = 50;
+let cama = 60;
+let enfermo = 25;
+let bañera = 30;
+let bola = 69;
+
+
+/* INICIA EL DRAG */
+function dragstartHandler(ev){
+    ev.dataTransfer.setData("text", ev.target.id);
+}
+
+/* PERMITE SOLTAR */
+function dragoverHandler(ev){
+    ev.preventDefault();
+}
+
+/* CUANDO SE SUELTA */
+function dropHandler(ev){
+
+    ev.preventDefault();
+
+    const data = ev.dataTransfer.getData("text");
+
+    // obtiene el id de la imagen
+    if(data == "comida" && hambre>0){
+        hambre -= 5;
+        /* document.getElementById("zonaMascota").style.backgroundImage ="url('img/Triste.gif')"; */
+    }
+       if(data == "cama" && cama>0){
+        cama -= 5;
+    }
+
+     if(data == "enfermo" && enfermo < 100){
+    enfermo += 5;
+
+    actualizarEstado();
+}
+
+       if(data == "bañera" && bañera>0){
+        bañera -= 5;
+    }
+      if(data == "bola" && bola>0){
+        bola -= 5;
+    }
+
+
+    actualizarLabels();
+actualizarEstado();
+}
+
+/* ACTUALIZA TEXTO */
+function actualizarLabels(){
+
+    document.getElementById("lblPorcentajeHambre").innerHTML =
+         hambre + "%";
+         
+    document.getElementById("lblPorcentajeCama").innerHTML =
+         cama + "%";
+    document.getElementById("lblPorcentajeSalud").innerHTML =
+         enfermo + "%";
+    document.getElementById("lblPorcentajeBaño").innerHTML =
+         bañera + "%";
+    document.getElementById("lblPorcentajeBola").innerHTML =
+         bola + "%";
+}
+
+function actualizarEstado(){
+
+    if(enfermo < 30){
+        document.getElementById("zonaMascota").style.backgroundImage =
+        "url('img/sick2.gif')";
+    }
+    else if(hambre > 30){
+        document.getElementById("zonaMascota").style.backgroundImage =
+        "url('img/enojado2.gif')";
+    }
+    else if(bola > 50){
+        document.getElementById("zonaMascota").style.backgroundImage =
+        "url('img/cansado2.gif')";
+    }
+    else if(bañera > 20){
+        document.getElementById("zonaMascota").style.backgroundImage =
+        "url('img/triste2.gif')";
+    }
+    else if(cama > 50){
+        document.getElementById("zonaMascota").style.backgroundImage =
+        "url('img/dormido.png')";
+    }
+    else{
+        document.getElementById("zonaMascota").style.backgroundImage =
+        "url('img/happy.gif')";
+    }
+
+}
+window.onload = function(){
+    actualizarLabels();
+    actualizarEstado();
+};
+</script>
+
+</head>
+
+<body>
+
+<h1>Mascota Virtual</h1>
+
+<div id="contenedor">
+
+    <!-- DIV GRANDE -->
+    <div id="zonaMascota"
+         ondrop="dropHandler(event)"
+         ondragover="dragoverHandler(event)">
+         
+    </div>
+
+    <!-- LABELS -->
+    <div id="panel">
+        
+        <label id="lblHambre">Hambre: </label>
+        <label id="lblPorcentajeHambre">50% </label>
+        <br></br>
+        <label id="lblCama">Sueño: </label>
+        <label id="lblPorcentajeCama">3% </label>
+         <br></br>
+        <label id="lblSalud">Salud: </label>
+        <label id="lblPorcentajeSalud">8% </label>
+        <br></br>
+
+        <label id="lblBaño">Baño: </label>
+        <label id="lblPorcentajeBaño">20% </label>
+        <br></br>
+         <label id="lblbola">Bola: </label>
+         <label id="lblPorcentajeBola">67% </label>
+
+
+    </div>
+
+</div>
+
+
+<!-- OBJETOS -->
+<div id="objetos">
+
+    <!-- COMIDA -->
+    <img
+        id="comida"
+        class="objeto"
+        src="img/FRESA.png"
+        draggable="true"
+        ondragstart="dragstartHandler(event)"
+        
+    >
+
+    <!-- CAMA -->
+    <img
+        id="cama"
+        class="objeto"
+        src="img/ZZZ.png"
+        draggable="true"
+        ondragstart="dragstartHandler(event)"
+    >
+
+    <!-- ENFERMO -->
+    <img
+        id="enfermo"
+        class="objeto"
+        src="img/CURA.png"
+        draggable="true"
+        ondragstart="dragstartHandler(event)"
+    >
+
+     <!-- BAÑERA -->
+    <img
+        id="bañera"
+        class="objeto"
+        src="img/Bañera.png"
+        draggable="true"
+        ondragstart="dragstartHandler(event)"
+    >
+     <!-- BOLA -->
+    <img
+        id="bola"
+        class="objeto"
+        src="img/bola.png"
+        draggable="true"
+    ondragstart="dragstartHandler(event)"
+    >
+<div id="tarjetaAyuda">
+    <h3>💡 ¿Qué necesita tu mascota?</h3>
+
+    <p>💊 Si está enfermo, ocupa medicina.</p>
+    <p>🍓 Si está enojado, tiene hambre.</p>
+    <p>⚽ Si está preocupado, quiere jugar.</p>
+    <p>🛁 Si está llorando, quiere bañarse.</p>
+    <p>😴 Si tiene sueño, quiere dormir.</p>
+</div>
+
+
+</div>
+
+</body>
+</html>
